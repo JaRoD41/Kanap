@@ -38,6 +38,7 @@
 						colorSelectedProduct: colorOptions.value,
 						quantitySelectedProduct: getProductQuantity.value
 					};
+					//Je crée la variable qui contiendra les produits envoyé au LS
 					let localStorageProducts = JSON.parse(
 						localStorage.getItem("LsProducts")
 					);
