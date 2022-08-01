@@ -1,6 +1,19 @@
-
-
-
+const zonePanier = document.querySelector("#cart__items");
+const zoneImgKanap = document.querySelector(".cart__item__img");
+const zoneNameColorPriceKanap = document.querySelector(".cart__item__content__description");
+const zoneQuantityKanap = document.querySelector(
+	".cart__item__content__settings__quantity"
+);
+const zoneDeleteKanap = document.querySelector(".deleteItem");
+const zoneTotalQuantity = document.querySelector("#totalQuantity");
+const zoneTotalPrice = document.querySelector("#totalPrice");
+const formErrorMessage = "Merci de modifier votre saisie, SVP";
+const zoneFirstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
+const zoneLastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
+const zoneAddressErrorMsg = document.querySelector("#addressErrorMsg");
+const zoneCityErrorMsg = document.querySelector("#cityErrorMsg");
+const zoneEmailErrorMsg = document.querySelector("#emailErrorMsg");
+const zoneOrderButton = document.querySelector("#order");
 
 /*<article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
                 <div class="cart__item__img">
@@ -23,3 +36,6 @@
                   </div>
                 </div>
               </article>*/
+
+//<p>Total (<span id="totalQuantity"><!-- 2 --></span> articles) : <span id="totalPrice"><!-- 84,00 --></span> €</p>
+//<p id="firstNameErrorMsg"><!-- ci est un message d'erreur --></p>

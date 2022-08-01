@@ -1,0 +1,1 @@
+// BIEN PENSER A UTILISER Window.confirm()

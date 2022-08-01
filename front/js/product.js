@@ -32,11 +32,6 @@
                 const button = document.getElementById("addToCart");
 
 //---------------------------------------localStorage----------------------------------------------------           
-/*let basketValue = {
-	idSelectedProduct: kanapPageId,
-	colorSelectedProduct: colorOptions.value,
-	quantitySelectedProduct: getProductQuantity.value,
-};*/
 
 //je crée une fonction de sauvegarde du panier
 function saveBasket(basketValue) {
@@ -76,7 +71,6 @@ function addBasket(product){
 					
 let basketValue = {
 	idSelectedProduct: kanapPageId,
-    nameSelectedProduct: nomKanap.value,
 	colorSelectedProduct: colorOptions.value
 };
 
@@ -116,9 +110,10 @@ function addBasket(product) {
 	} else {
 		let newQuantity =
 					parseInt(foundProducts.quantity) + parseInt(getProductQuantity.value); //CUMUL Quantité si présent
-		foundProducts.quantity = newQuantity;
+					foundProducts.quantity = newQuantity;
 	}
 	saveBasket(basketValue);
+	
 }
 
 					// Si le choix de couleur est vide
