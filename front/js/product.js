@@ -28,74 +28,110 @@
             });
 
 // je crée une fonction déclenchée au clic sur le bouton ADDTOCART
-                
+
                 const button = document.getElementById("addToCart");
-                
-				button.addEventListener("click", function () {
-// je crée l'objet qui va récupérer les données du kanap selectionné
-					const basketSelectedProduct = {
-						idSelectedProduct: kanapPageId,
-						colorSelectedProduct: colorOptions.value,
-						quantitySelectedProduct: getProductQuantity.value
-					};
-					//Je crée la variable qui contiendra les produits envoyé au LS
-					let localStorageProducts = JSON.parse(
-						localStorage.getItem("LsProducts")
-					);
+
+//---------------------------------------localStorage----------------------------------------------------           
+/*let basketValue = {
+	idSelectedProduct: kanapPageId,
+	colorSelectedProduct: colorOptions.value,
+	quantitySelectedProduct: getProductQuantity.value,
+};*/
+
+//je crée une fonction de sauvegarde du panier
+function saveBasket(basketValue) {
+	localStorage.setItem("kanapLs", JSON.stringify(basketValue));
+    alert("Produit ajouté au panier !");
+}
+
+//je crée une fonction de récupération du panier
+function getBasket() {
+	let basketValue = localStorage.getItem("kanapLs");
+    if(basketValue == null){
+        return [];
+    }else{
+        return JSON.parse(basketValue);
+    }
+}
+
+//je crée une fonction d'ajout au panier
+function addBasket(product){
+    let basketValue = getBasket();
+    let foundProducts = basketValue.find( 
+			(item) => item.kanapPageId == product.kanapPageId && item.colorOptions.value == product.colorOptions.value
+		); //si les produits du panier et les produits du LS ont même ID et même couleur
+    if(foundProducts == undefined && colorOptions.value != "" &&
+							getProductQuantity.value > 0 &&
+							getProductQuantity.value <= 100){
+        product.quantity = getProductQuantity.value;//modifier 1 en mettant la quantité dynamique 
+        basketValue.push(product);
+    }else{
+        foundProducts.quantity++;
+    }
+    saveBasket(basketValue);
+}
+
+// liste des actions déclenchées au clic sur le bouton "ajouter"
+				button.addEventListener("click", () => {
+					
+let basketValue = {
+	idSelectedProduct: kanapPageId,
+    nameSelectedProduct: nomKanap.value,
+	colorSelectedProduct: colorOptions.value
+};
+
+//je crée une fonction de sauvegarde du panier
+function saveBasket(basketValue) {
+	localStorage.setItem("kanapLs", JSON.stringify(basketValue));
+	alert("Produit ajouté au panier !");
+}
+
+//je crée une fonction de récupération du panier
+function getBasket() {
+	let basketValue = localStorage.getItem("kanapLs");
+	if (basketValue == null) {
+		return [];
+	} else {
+		return JSON.parse(basketValue);
+	}
+}
+
+//je crée une fonction d'ajout au panier
+function addBasket(product) {
+	let basketValue = getBasket();
+	let foundProducts = basketValue.find(
+		(item) =>
+			item.kanapPageId == product.kanapPageId &&
+			item.colorSelectedProduct == product.colorSelectedProduct
+	); //si les produits du panier et les produits du LS ont même ID et même couleur
+    
+	if (
+		foundProducts == undefined &&
+		colorOptions.value != "" &&
+		getProductQuantity.value > 0 &&
+		getProductQuantity.value <= 100
+	) {
+		product.quantity = getProductQuantity.value; 
+		basketValue.push(product);
+	} else {
+		let newQuantity =
+					parseInt(foundProducts.quantity) + parseInt(getProductQuantity.value); //CUMUL Quantité si présent
+		foundProducts.quantity = newQuantity;
+	}
+	saveBasket(basketValue);
+}
+
 					// Si le choix de couleur est vide
 					if (colorOptions.value === "") {
 						alert("Veuillez choisir une couleur, SVP");
 					}
-					// Si la quantité choisie est nulle ET si elle dépasse 100
+                    // Si la quantité choisie est nulle OU si elle dépasse 100
 					else if (
 						getProductQuantity.value <= 0 ||
 						getProductQuantity.value > 100
 					) {
 						alert("Veuillez sélectionner une quantité correcte, SVP");
 					} else {
-						// Si choix de couleur OK, quantité choisie OK et LS vide
-						if (
-							colorOptions.value != "" &&
-							getProductQuantity.value > 0 &&
-							getProductQuantity.value <= 100 ||
-							localStorageProducts == null
-						) {
-							let localStorageProducts = [];
-							// je crée un push pour ajouter les produits à ma variable
-							localStorageProducts.push(basketSelectedProduct);
-							localStorage.setItem(
-								"LsProducts",
-								JSON.stringify(localStorageProducts)
-							);
-							alert("Produit ajouté au panier !");
-							console.log("PRODUIT SELECTIONNÉ => ", basketSelectedProduct);
-						}
-						else if (localStorageProducts != null) { //si le LS contient quelque chose
-							let foundProducts = localStorageProducts.find(
-								(article) =>
-								article.kanapPageId === basketSelectedProduct.kanapPageId && 
-								article.colorOptions === basketSelectedProduct.colorOptions
-							);
-							if (foundProducts) {
-								let newQuantity = parseInt(foundProducts.getProductQuantity) + parseInt(basketSelectedProduct.getProductQuantity);
-								foundProducts.getProductQuantity = newQuantity;
-								
-								localStorage.setItem(
-									"LsProducts",
-									JSON.stringify(localStorageProducts)
-								);
-								alert("Produit ajouté au panier !");
-								localStorage.setItem("LsProducts", JSON.stringify(localStorageProducts));
-								
-							}else{
-								localStorageProducts.push(basketSelectedProduct);
-								localStorage.setItem(
-									"LsProducts",
-									JSON.stringify(localStorageProducts)
-								);
-							}
-						}
-					}
-					
-				});
-    
+                        addBasket(basketValue);
+                        
+				}});

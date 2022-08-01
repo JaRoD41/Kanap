@@ -1,42 +1,25 @@
-//j'ajoute le contenu de mon objetcbasketSelectedProduct à l'intérieur du tableau du Local Storage
-//localStorage.setItem("LsProducts", JSON.stringify(localStorageProducts));
 
 
-                    let localStorageProducts = JSON.parse(
-											localStorage.getItem("LsProducts")
-										);
-					// Si le choix de couleur est vide
-						if (colorOptions.value === "") {
-							alert("Veuillez choisir une couleur, SVP");
-						}
-                    // Si la quantité choisie est nulle ET si elle dépasse 100
-						else if (
-							getProductQuantity.value <= 0 ||
-							getProductQuantity.value > 100
-						) {
-							alert("Veuillez sélectionner une quantité correcte, SVP");
-						}
-						else{
-                             // Si les valeurs de choix de couleur ET la quantité choisie sont OK
-					        if (
-						        colorOptions.value != "" &&
-						        getProductQuantity.value > 0 &&
-						        getProductQuantity.value <= 100 &&
-                                localStorageProducts == null
-					        ) {
-										let localStorageProducts = [];
-										// je crée un push pour ajouter les produits à ma variable
-										localStorageProducts.push(basketSelectedProduct);
-										console.log(
-											"PRODUIT SELECTIONNÉ => ",
-											basketSelectedProduct
-										);
-									}
 
-                        }
-						
-						
-						
-					
 
-console.log("PRODUIT SELECTIONNÉ => ", basketSelectedProduct); // SINON
+/*<article class="cart__item" data-id="{product-ID}" data-color="{product-color}">
+                <div class="cart__item__img">
+                  <img src="../images/product01.jpg" alt="Photographie d'un canapé">
+                </div>
+                <div class="cart__item__content">
+                  <div class="cart__item__content__description">
+                    <h2>Nom du produit</h2>
+                    <p>Vert</p>
+                    <p>42,00 €</p>
+                  </div>
+                  <div class="cart__item__content__settings">
+                    <div class="cart__item__content__settings__quantity">
+                      <p>Qté : </p>
+                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="42">
+                    </div>
+                    <div class="cart__item__content__settings__delete">
+                      <p class="deleteItem">Supprimer</p>
+                    </div>
+                  </div>
+                </div>
+              </article>*/
