@@ -9,7 +9,7 @@
     let getProductQuantity = document.querySelector("#quantity");
     
 
-    fetch("http://localhost:3000/api/products/" + kanapPageId) //je ne selectionne QUE la partie du JSON qui m'interesse en fonction de l'id du kanap concerné à fetch
+    fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne QUE la partie du JSON qui m'interesse en fonction de l'id du kanap concerné à fetch
 			.then((res) => res.json())
 			.then((object) => {
                 let imgKanap = object.imageUrl;
@@ -69,8 +69,9 @@ function addBasket(product){
 // liste des actions déclenchées au clic sur le bouton "ajouter"
 				button.addEventListener("click", () => {
 					
-let basketValue = {
+let basketValue = { //initialisation de la variable basketValue
 	idSelectedProduct: kanapPageId,
+	nameSelectedProduct: nomKanap,
 	colorSelectedProduct: colorOptions.value
 };
 
@@ -126,7 +127,7 @@ function addBasket(product) {
 						getProductQuantity.value > 100
 					) {
 						alert("Veuillez sélectionner une quantité correcte, SVP");
-					} else {
+					} else {  //Si tout est OK, on envoie le panier au LS
                         addBasket(basketValue);
                         
 				}});
