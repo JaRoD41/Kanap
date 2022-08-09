@@ -131,3 +131,4 @@ function addBasket(product) {
                         addBasket(basketValue);
                         
 				}});
+
