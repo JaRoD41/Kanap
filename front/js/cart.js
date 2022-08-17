@@ -19,21 +19,20 @@ const zoneOrderButton = document.querySelector("#order");
 function getBasket() {
 	return JSON.parse(localStorage.getItem("kanapLs"));
 	}
-	let basketValue = getBasket();
-let tableauLsPourPanier = getBasket(); // création du tableau qui contiendra les articles récupérés
+ let basketValue = getBasket();// création du tableau qui contiendra les articles récupérés
 //let finalTotalPrice = [];
 function showBasket() {
 	if (basketValue != null) {
-		for (let item in tableauLsPourPanier) {
-	let kanapId = tableauLsPourPanier[item].idSelectedProduct;
+		for (let item of basketValue) {
+	let kanapId = item.idSelectedProduct;
 	fetch(`http://localhost:3000/api/products/${kanapId}`) //je ne selectionne QUE la partie du JSON qui m'interesse en fonction de l'id des articles du panier à fetch
 		.then((res) => res.json())
 		.then((canap) => {
 			let kanapUnityPrice = canap.price;
-			let kanapQty = JSON.parse(tableauLsPourPanier[item].quantity);
+			let kanapQty = JSON.parse(item.quantity);
 			let kanapImage = canap.imageUrl;
 			let kanapName = canap.name;
-			let kanapColor = tableauLsPourPanier[item].colorSelectedProduct;
+			let kanapColor = item.colorSelectedProduct;
 			let newBasket = JSON.parse(localStorage.getItem("kanapLs"));
 			calculQteTotale(newBasket);
 			calculPrixTotal(newBasket);
@@ -53,28 +52,28 @@ function showBasket() {
 					);
 					zoneTotalQuantity.textContent = qtyReduce;
 				}
-			};
+			}
 
 			/////////////////////  Calcul du prix total des articles  //////////////////////
 
 			function calculPrixTotal(newBasket) {
 				newBasket = getBasket();
-			let finalTotalPrice = [];
-			for (let kanap of newBasket) {
-				//newBasket = getBasket();
-				console.log("canapé affiché :", kanap);
-				finalTotalPrice.push(
-					parseInt(kanapUnityPrice) * parseInt(kanapQty)
-				);
-				let total = 0;
-				let totalReduce = finalTotalPrice.reduce(
-					(previousValue, currentValue) => previousValue + currentValue,
-					total
-				);
-				console.log("total avant reduce :", finalTotalPrice);
-				zoneTotalPrice.textContent = totalReduce;
+				let finalTotalPrice = [];
+				for (let kanap of newBasket) {
+					//newBasket = getBasket();
+					console.log("canapé affiché :", kanap);
+					finalTotalPrice.push(
+						parseInt(canap.price) * parseInt(kanap.quantity)
+					);
+					let total = 0;
+					let totalReduce = finalTotalPrice.reduce(
+						(previousValue, currentValue) => previousValue + currentValue,
+						total
+					);
+					console.log("total avant reduce :", finalTotalPrice);
+					zoneTotalPrice.textContent = totalReduce;
+				}
 			}
-		};
 			/////////////////////concaténation dynamique des variables et HTML///////////////
 
 			zonePanier.innerHTML += `<article class="cart__item" data-id="${kanapId}" data-color="${kanapColor}">
@@ -106,7 +105,8 @@ function showBasket() {
 			function modifyQuantity() {
 				let quantityInCart = document.querySelectorAll(".itemQuantity");
 				for (let input of quantityInCart) {
-					input.addEventListener("change", function () { //écoute du changement de qty
+					input.addEventListener("change", function () {
+						//écoute du changement de qty
 						let newBasket = getBasket();
 						//On récupère l'ID de la donnée modifiée
 						let idModif = this.closest(".cart__item").dataset.id;
@@ -134,7 +134,7 @@ function showBasket() {
 							calculPrixTotal(newBasket);
 						}
 					});
-					
+
 					console.log("qty modifiée :", input.value);
 				}
 			}
@@ -170,14 +170,16 @@ function showBasket() {
 				document.querySelector("#cart__items").removeChild(elementToRemove);
 				//Suppression dans le local storage
 				//On récupère le bon iD dans le panier
-				let findId = newBasket.filter((e) => e.idSelectedProduct === idModif);
+				let findId = newBasket.filter((e) => e.idSelectedProduct === idModif); //cherche id identiques
 				//Puis on récupère la couleur
-				let findColor = findId.find((e) => e.colorSelectedProduct == colorModif);
-				let index = newBasket.indexOf(findColor);
+				let findColor = findId.find(
+					(e) => e.colorSelectedProduct == colorModif
+				); //retourne le premier même couleur
+				let index = newBasket.indexOf(findColor); //renvoie -1 si non trouvé
 				//On supprime le kanap du panier
 				if (index >= 0) {
 					newBasket.splice(index, 1);
-				};
+				}
 				//On met a jour le LS / panier
 				alert("article supprimé !");
 				localStorage.setItem("kanapLs", JSON.stringify(newBasket));
@@ -186,10 +188,12 @@ function showBasket() {
 			}
 			modifyQuantity();
 			removeItem();
+
 			
-			//location.reload();
 		}) // fin du fetch
-		
+		.catch(function (err) {
+			console.log(err);
+		});
 		}; /// fin de la boucle for
 	};
 	}; /// accolade de fin de fonction affichage Panier

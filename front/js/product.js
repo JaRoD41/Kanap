@@ -53,7 +53,8 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 			//je crée une fonction d'ajout au panier
 			function addBasket(product) {
 				let basketValue = getBasket();
-				let foundProducts = basketValue.find(  /// on définit foundProducts comme l'article à trouver
+				let foundProducts = basketValue.find(
+					/// on définit foundProducts comme l'article à trouver
 					(item) =>
 						item.kanapPageId == product.kanapPageId &&
 						item.colorSelectedProduct == product.colorSelectedProduct
@@ -74,6 +75,7 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 					foundProducts.quantity = newQuantity;
 				}
 				saveBasket(basketValue);
+				console.log("found products :", foundProducts);
 				console.log("canap ajouté :", product);
 				console.log("contenu du LS :", basketValue);
 				alert(
@@ -100,4 +102,7 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 				addBasket(basketValue);
 			}
 		});
+	})
+	.catch(function (err) {
+		console.log(err);
 	});
