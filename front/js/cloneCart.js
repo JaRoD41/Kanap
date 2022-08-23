@@ -5,8 +5,6 @@ const zoneNameColorPriceKanap = document.querySelector(
 	".cart__item__content__description"
 );
 
-
-
 const formErrorMessage = "Merci de modifier votre saisie, SVP";
 const zoneFirstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
 const zoneLastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
@@ -17,9 +15,9 @@ const zoneOrderButton = document.querySelector("#order");
 /////////////fonction de récupération du panier///////////
 function getBasket() {
 	return JSON.parse(localStorage.getItem("kanapLs"));
-};
+}
 
-let basketValue = getBasket();// création du tableau qui contiendra les articles récupérés
+let basketValue = getBasket(); // création du tableau qui contiendra les articles récupérés
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,7 +31,7 @@ function messagePanierVide() {
 
 	document.querySelector(".cart__order").style.display = "none"; //masque le formulaire si panier vide
 	document.querySelector(".cart__price").style.display = "none"; // masque le prix total si panier vide
-};
+}
 
 let finalTotalPrice = [];
 
@@ -81,7 +79,7 @@ function showBasket() {
 						console.log("somme totale :", finalTotalPrice);
 						localStorage.setItem("kanapLs", JSON.stringify(basketValue));
 						zoneTotalPrice.textContent = finalTotalPrice;
-					};
+					}
 
 					/////////////////////concaténation dynamique des variables et HTML///////////////
 
@@ -219,21 +217,13 @@ function showBasket() {
 	} else {
 		return messagePanierVide();
 	}
-	
-};
-	 /// accolade de fin de fonction affichage Panier
+}
+/// accolade de fin de fonction affichage Panier
 
 //On Push le panier dans le local Storage
 localStorage.setItem("kanapLs", JSON.stringify(basketValue));
 
-
 getBasket();
 
-
 /////////////// on affiche le panier en appelant la fonction /////////////////
-	showBasket();
-
-
-///////////////// FORMULAIRE ///////////////////////////////////////////////
-
-//<p id="firstNameErrorMsg"><!-- ci est un message d'erreur --></p>
+showBasket();

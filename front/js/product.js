@@ -38,15 +38,16 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 				idSelectedProduct: kanapPageId,
 				nameSelectedProduct: nameKanap,
 				colorSelectedProduct: colorOptions.value,
+				quantity: getProductQuantity.value
 			};
 
 			//je crée une fonction de récupération du panier
 			function getBasket() {
-				let basketValue = localStorage.getItem("kanapLs");
+				let basketValue = JSON.parse(localStorage.getItem("kanapLs"));
 				if (basketValue == null) {
 					return [];
 				} else {
-					return JSON.parse(basketValue);
+					return basketValue
 				}
 			}
 
@@ -56,8 +57,8 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 				let foundProducts = basketValue.find(
 					/// on définit foundProducts comme l'article à trouver
 					(item) =>
-						item.kanapPageId == product.kanapPageId &&
-						item.colorSelectedProduct == product.colorSelectedProduct
+						item.kanapPageId === product.kanapPageId &&
+						item.colorSelectedProduct === product.colorSelectedProduct
 				); //si les produits du panier et les produits du LS ont même ID et même couleur
 
 				if (
