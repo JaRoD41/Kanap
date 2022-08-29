@@ -1,25 +1,39 @@
 const basketValue = getBasket();
 const zonePanier = document.querySelector("#cart__items");
 /////////////// déclaration de la fonction du fetch pour acceder aux infos Hors Scope/////////
-function fetchApi() {    
+function fetchApi() {
+	let basketArrayFull = [];
+	for (const i of basketValue) {
+		const kanapId = i.idSelectedProduct;
+		fetch(`http://localhost:3000/api/products/${kanapId}`)
+			.then((res) => res.json())
+			.then((canap) => {
+				showBasket(i, canap);
+				const article = {
+					//création d'un objet qui va regrouper les infos nécessaires à la suite
+					_id: canap._id,
+					name: canap.name,
+					price: canap.price,
+					color: i.colorSelectedProduct,
+					quantity: i.quantity,
+					alt: canap.altTxt,
+					img: canap.imageUrl,
+				};
+				basketArrayFull.push(article);
+			})
+			.catch(function (err) {
+				console.log(err);
+			});
+	}
+	for (let apicontent of basketArrayFull) {
+		console.log("test donnees api :", apicontent);
+	}
 
-for (const i of basketValue) {
-	const kanapId = i.idSelectedProduct;
-	fetch(`http://localhost:3000/api/products/${kanapId}`)
-		.then((res) => res.json())
-		.then((canap) => {
-			showBasket(i, canap);
-			let testt = canap.price;
-			console.log("test data fetch :", testt);
-		})
-		.catch(function (err) {
-			console.log(err);
-		});
+	return basketArrayFull;
 }
-};
 const showBasket = (localStorageData, apiData) => {
 	if (basketValue !== null) {
-        zonePanier.innerHTML += `<article class="cart__item" data-id="${localStorageData.idSelectedProduct}" data-color="${localStorageData.colorSelectedProduct}">
+		zonePanier.innerHTML += `<article class="cart__item" data-id="${localStorageData.idSelectedProduct}" data-color="${localStorageData.colorSelectedProduct}">
                 <div class="cart__item__img">
                   <img src= "${apiData.imageUrl}" alt="Photographie d'un canapé">
                 </div>
@@ -40,28 +54,28 @@ const showBasket = (localStorageData, apiData) => {
                   </div>
                 </div>
               </article>`;
-
 	} else {
 		return messagePanierVide();
 	}
 };
 //création des fonctions de modif et suppression d'articles du panier////
 
-function getBasket() {  // fonction de récupération du LocalStorage//////
-    return JSON.parse(localStorage.getItem("kanapLs"));
-};
+function getBasket() {
+	// fonction de récupération du LocalStorage//////
+	return JSON.parse(localStorage.getItem("kanapLs"));
+}
 
 /// Initialisation des fonctions ///////////
 
-fetchApi();
-removeItem();
-modifyQuantity();
+//fetchApi();
 calculQteTotale(basketValue);
 calculPrixTotal();
-
-
+removeItem();
+removeFromBasket();
+modifyQuantity();
 
 //Fonction permettant de modifier le nombre d'éléments dans le panier
+console.log("LS hors du fetch :", fetchApi());
 
 function modifyQuantity() {
 	const quantityInCart = document.querySelectorAll(".itemQuantity");
@@ -84,66 +98,34 @@ function modifyQuantity() {
 				calculQteTotale(basketValue);
 				calculPrixTotal();
 			} else {
+				removeFromBasket(idModif, colorModif, basketValue);
 				calculQteTotale(basketValue);
 				calculPrixTotal();
 			}
 			localStorage.setItem("kanapLs", JSON.stringify(basketValue));
 		});
 	}
-};
+}
 
 ////////////////Supprimer un kanap avec le bouton delete////////
 
 function removeItem() {
-	let kanapDelete = document.querySelectorAll(".deleteItem");
-	kanapDelete.forEach((article) => {
-		article.addEventListener("click", function (event) {
+	const buttonsDelete = document.querySelectorAll(".deleteItem");
+	for (let button of buttonsDelete) {
+		button.addEventListener("click", function () {
 			let basketValue = getBasket();
 			//On récupère l'ID de la donnée modifiée
-			const idDelete = event.target.closest("article").getAttribute("data-id");
-			console.log("id modifié", idDelete);
+			let idModif = this.closest(".cart__item").dataset.id;
 			//On récupère la couleur de la donnée modifiée
-			const colorDelete = event.target
-				.closest("article")
-				.getAttribute("data-color");
-			const searchDeleteKanap = basketValue.find(
-				(element) => element.idSelectedProduct == idDelete && element.colorSelectedProduct == colorDelete
-			);
-			basketValue = basketValue.filter(
-				(item) => item != searchDeleteKanap
-			);
-			localStorage.setItem("kanapLs", JSON.stringify(basketValue));
-			alert("article supprimé !");
+			let colorModif = this.closest(".cart__item").dataset.color;
+			removeFromBasket(idModif, colorModif, basketValue);
 			calculQteTotale(basketValue);
 			calculPrixTotal();
 		});
-	});
-	if (getBasket().length === 0) {
-		localStorage.clear();
-		return messagePanierVide();
 	}
-};
-removeItem();
+}
 
-//////////////// fonction de création d'un tableau regroupant les infos du fetch ET du LS////////
-// essai raté comme d'habitude cela ne fonctionne pas.....
-/*function makeKanapArray(canap, i) {
-	let basketArrayFull = [];
-	const article = {
-		//création d'un objet qui va regrouper les infos nécessaires à la suite
-		_id: canap._id,
-		name: canap.name,
-		price: canap.price,
-		color: i.colorSelectedProduct,
-		quantity: i.quantity,
-		alt: canap.altTxt,
-		img: canap.imageUrl,
-	};
-	basketArrayFull.push(article);
-	return basketArrayFull
-};*/
-
-//////////////// Message si panier vide ////////////////////
+////////////////Message si panier vide////////////////////
 
 function messagePanierVide() {
 	const cartTitle = document.querySelector(
@@ -155,34 +137,69 @@ function messagePanierVide() {
 
 	document.querySelector(".cart__order").style.display = "none"; //masque le forulaire si panier vide
 	document.querySelector(".cart__price").style.display = "none"; // masque le prix total si panier vide
-};
+}
+
+//////////////Fonction pour supprimer un kanap du panier////////
+
+function removeFromBasket(idModif, colorModif, basketValue) {
+	getBasket();
+	//Suppression de l'affichage
+	let elementToRemove = document.querySelector(
+		`article[data-id="${idModif}"][data-color="${colorModif}"]`
+	);
+	console.log("elmt", elementToRemove);
+	document.querySelector("#cart__items").removeChild(elementToRemove);
+	//Suppression dans le local storage
+	//On récupère le bon iD dans le panier
+	let getKanap = basketValue.find(
+		(product) =>
+			product.idSelectedProduct === idModif &&
+			product.colorSelectedProduct === colorModif
+	);
+
+	let index = basketValue.indexOf(getKanap);
+	basketValue.splice(index, 1);
+	localStorage.setItem("kanapLs", JSON.stringify(basketValue));
+
+	if (getBasket().length === 0) {
+		localStorage.clear();
+		return messagePanierVide();
+	}
+	//On met a jour le LS / panier
+	alert("article supprimé !");
+	localStorage.setItem("kanapLs", JSON.stringify(basketValue));
+	calculQteTotale(basketValue);
+	calculPrixTotal();
+}
 
 ////////////////////////Fonction addition quantités et Prix pour Total////////////////
 
-function calculQteTotale() {
-	let basketValue = getBasket();
+function calculQteTotale(basketValue) {
 	const zoneTotalQuantity = document.querySelector("#totalQuantity");
 	let quantityInBasket = []; // création d'un tableau vide pour accumuler les qtés
 	for (let kanap of basketValue) {
-		//basketValue = getBasket();
+		basketValue = getBasket();
 		quantityInBasket.push(parseInt(kanap.quantity)); //push des qtés
 		const reducer = (accumulator, currentValue) => accumulator + currentValue; // addition des objets du tableau par reduce
 		let qtyReduce = quantityInBasket.reduce(reducer, 0); //valeur initiale à 0 pour eviter erreur quand panier vide
 		zoneTotalQuantity.textContent = qtyReduce;
-        console.log("qté :", qtyReduce);
+		console.log("qté :", qtyReduce);
 	}
-};
+}
 
 function calculPrixTotal() {
 	const zoneTotalPrice = document.querySelector("#totalPrice");
-    finalTotalPrice = [];
-    console.log("basketValue :", basketValue);
-    for (let p = 0; p < basketValue.length; p++) {
-	let sousTotal = parseInt(basketValue[p].quantity) //* parseInt(produitsApi[p].price); A COMPLETER
-	finalTotalPrice.push(sousTotal);
-	localStorage.setItem("kanapLs", JSON.stringify(basketValue));
-	zoneTotalPrice.textContent = finalTotalPrice;
-}};
+	finalTotalPrice = [];
+	console.log("basketValue :", basketValue);
+	console.log("fetchApi :", fetchApi().length);
+	//fetchApi();
+	for (let p = 0; p < basketValue.length; p++) {
+		let sousTotal = parseInt(basketValue[p].quantity); //* parseInt(produitsApi[p].price); A COMPLETER
+		finalTotalPrice.push(sousTotal);
+		localStorage.setItem("kanapLs", JSON.stringify(basketValue));
+		zoneTotalPrice.textContent = finalTotalPrice;
+	}
+}
 
 modifyQuantity();
 removeItem();

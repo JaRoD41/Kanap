@@ -44,14 +44,14 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 			//je crée une fonction de récupération du panier
 			function getBasket() {
 				let basketValue = JSON.parse(localStorage.getItem("kanapLs"));
-				if (basketValue == null) {
+				if (basketValue === null) {
 					return [];
 				} else {
 					return basketValue
 				}
 			}
 
-			//je crée une fonction d'ajout au panier
+			//je crée une fonction d'ajout au panier avec argument product
 			function addBasket(product) {
 				let basketValue = getBasket();
 				let foundProducts = basketValue.find(
@@ -60,7 +60,7 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 						item.kanapPageId === product.kanapPageId &&
 						item.colorSelectedProduct === product.colorSelectedProduct
 				); //si les produits du panier et les produits du LS ont même ID et même couleur
-
+					// il retournera undefined  
 				if (
 					foundProducts == undefined &&
 					colorOptions.value != "" &&
@@ -76,9 +76,6 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 					foundProducts.quantity = newQuantity;
 				}
 				saveBasket(basketValue);
-				console.log("found products :", foundProducts);
-				console.log("canap ajouté :", product);
-				console.log("contenu du LS :", basketValue);
 				alert(
 					`Le canapé ${nameKanap} ${colorOptions.value} a été ajouté en ${getProductQuantity.value} exemplaires à votre panier !`
 				);
