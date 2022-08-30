@@ -1,38 +1,65 @@
-const basketValue = getBasket();
-const zonePanier = document.querySelector("#cart__items");
+const basketValue = JSON.parse(localStorage.getItem("kanapLs"));
 /////////////// déclaration de la fonction du fetch pour acceder aux infos Hors Scope/////////
-function fetchApi() {    
-
-for (const i of basketValue) {
-	const kanapId = i.idSelectedProduct;
-	fetch(`http://localhost:3000/api/products/${kanapId}`)
+async function fetchApi() {    
+let basketArrayFull = [];
+let BasketClassFull = JSON.parse(localStorage.getItem("kanapLs"));
+console.log(BasketClassFull);
+for (g = 0; g < BasketClassFull.length; g++) {
+	await fetch("http://localhost:3000/api/products/" + BasketClassFull[g].idSelectedProduct)
 		.then((res) => res.json())
 		.then((canap) => {
-			showBasket(i, canap);
-			let testt = canap.price;
-			console.log("test data fetch :", testt);
+			//showBasket(i, canap);
+			const article = {
+				//création d'un objet qui va regrouper les infos nécessaires à la suite
+				_id: canap._id,
+				name: canap.name,
+				price: canap.price,
+				color: BasketClassFull[g].colorSelectedProduct,
+				quantity: BasketClassFull[g].quantity,
+				alt: canap.altTxt,
+				img: canap.imageUrl,
+			};
+			basketArrayFull.push(article);
 		})
 		.catch(function (err) {
 			console.log(err);
 		});
 }
+return basketArrayFull;
 };
-const showBasket = (localStorageData, apiData) => {
+
+/// Initialisation des fonctions ///////////
+
+initialize();
+async function initialize() {
+let basketArrayFull = fetchApi();
+showBasket(basketArrayFull);
+removeItem();
+modifyQuantity();
+
+calculQteTotale();
+calculPrixTotal();
+};
+//////////// fonction d'affichage du DOM ////////////////////
+
+function showBasket(basketArrayFull) {
+	const zonePanier = document.querySelector("#cart__items");
 	if (basketValue !== null) {
-        zonePanier.innerHTML += `<article class="cart__item" data-id="${localStorageData.idSelectedProduct}" data-color="${localStorageData.colorSelectedProduct}">
+		basketArrayFull.map((product) => {
+        zonePanier.innerHTML += `<article class="cart__item" data-id="${product._id}" data-color="${product.color}">
                 <div class="cart__item__img">
-                  <img src= "${apiData.imageUrl}" alt="Photographie d'un canapé">
+                  <img src= "${product.img}" alt="Photographie d'un canapé">
                 </div>
                 <div class="cart__item__content">
                   <div class="cart__item__content__description">
-                    <h2>${apiData.name}</h2>
-                    <p>${localStorageData.colorSelectedProduct}</p>
-                    <p>${apiData.price} €</p>
+                    <h2>${product.name}</h2>
+                    <p>${product.color}</p>
+                    <p>${product.price} €</p>
                   </div>
                   <div class="cart__item__content__settings">
                     <div class="cart__item__content__settings__quantity">
                       <p>Qté : </p>
-                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${localStorageData.quantity}">
+                      <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${product.quantity}">
                     </div>
                     <div class="cart__item__content__settings__delete">
                       <p class="deleteItem">Supprimer</p>
@@ -40,7 +67,7 @@ const showBasket = (localStorageData, apiData) => {
                   </div>
                 </div>
               </article>`;
-
+	});
 	} else {
 		return messagePanierVide();
 	}
@@ -50,16 +77,6 @@ const showBasket = (localStorageData, apiData) => {
 function getBasket() {  // fonction de récupération du LocalStorage//////
     return JSON.parse(localStorage.getItem("kanapLs"));
 };
-
-/// Initialisation des fonctions ///////////
-
-fetchApi();
-removeItem();
-modifyQuantity();
-calculQteTotale(basketValue);
-calculPrixTotal();
-
-
 
 //Fonction permettant de modifier le nombre d'éléments dans le panier
 
@@ -126,9 +143,9 @@ function removeItem() {
 removeItem();
 
 //////////////// fonction de création d'un tableau regroupant les infos du fetch ET du LS////////
-// essai raté comme d'habitude cela ne fonctionne pas.....
+
 /*function makeKanapArray(canap, i) {
-	let basketArrayFull = [];
+	
 	const article = {
 		//création d'un objet qui va regrouper les infos nécessaires à la suite
 		_id: canap._id,
@@ -174,6 +191,7 @@ function calculQteTotale() {
 };
 
 function calculPrixTotal() {
+	let basketValue = getBasket();
 	const zoneTotalPrice = document.querySelector("#totalPrice");
     finalTotalPrice = [];
     console.log("basketValue :", basketValue);
