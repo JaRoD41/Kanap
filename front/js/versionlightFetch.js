@@ -45,7 +45,7 @@ calculPrixTotal();
 function showBasket(basketArrayFull) {
 	const zonePanier = document.querySelector("#cart__items");
 	if (basketValue !== null) {
-		basketArrayFull.map((product) => {
+		basketArrayFull.map((product) => { ///// ERREUR ICI !!! ////////
         zonePanier.innerHTML += `<article class="cart__item" data-id="${product._id}" data-color="${product.color}">
                 <div class="cart__item__img">
                   <img src= "${product.img}" alt="Photographie d'un canapé">
