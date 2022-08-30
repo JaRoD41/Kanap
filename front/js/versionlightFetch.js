@@ -67,18 +67,7 @@ function getBasket() {  // fonction de récupération du LocalStorage//////
     return JSON.parse(localStorage.getItem("kanapLs"));
 };
 
-/// Initialisation des fonctions ///////////
 
-initialize();
-async function initialize() {
-let basketArrayFull = fetchApi();
-showBasket();
-removeItem();
-modifyQuantity();
-
-calculQteTotale();
-calculPrixTotal();
-};
 
 //Fonction permettant de modifier le nombre d'éléments dans le panier
 
@@ -146,6 +135,19 @@ async function removeItem() {
 };
 removeItem();
 
+/// Initialisation des fonctions ///////////
+
+initialize();
+async function initialize() {
+let basketArrayFull = fetchApi();
+showBasket();
+removeItem();
+modifyQuantity();
+
+calculQteTotale();
+calculPrixTotal();
+};
+
 //////////////// Message si panier vide ////////////////////
 
 function messagePanierVide() {
@@ -191,8 +193,10 @@ async function calculPrixTotal() {
 modifyQuantity();
 removeItem();
 
+
 //On Push le panier dans le local Storage
 localStorage.setItem("kanapLs", JSON.stringify(basketValue));
+
 
 
 
