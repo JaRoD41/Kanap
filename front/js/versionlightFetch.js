@@ -3,6 +3,7 @@ const basketValue = JSON.parse(localStorage.getItem("kanapLs"));
 async function fetchApi() {    
 let basketArrayFull = [];
 let basketClassFull = JSON.parse(localStorage.getItem("kanapLs"));
+if (basketClassFull !== null) {
 for (let g = 0; g < basketClassFull.length; g++) {
 	await fetch("http://localhost:3000/api/products/" + basketClassFull[g].idSelectedProduct)
 		.then((res) => res.json())
@@ -23,6 +24,7 @@ for (let g = 0; g < basketClassFull.length; g++) {
 			console.log(err);
 		});
 }
+}
 return basketArrayFull;
 };
 
@@ -31,10 +33,10 @@ return basketArrayFull;
 async function showBasket() {
 	const responseFetch = await fetchApi();
 	const basketValue = JSON.parse(localStorage.getItem("kanapLs"));
-	if (basketValue !== null) {
+	if (basketValue !== null && basketValue.length !== 0) {
 		const zonePanier = document.querySelector("#cart__items");
 		responseFetch.forEach((product) => {
-        zonePanier.innerHTML += `<article class="cart__item" data-id="${product._id}" data-color="${product.color}">
+			zonePanier.innerHTML += `<article class="cart__item" data-id="${product._id}" data-color="${product.color}">
                 <div class="cart__item__img">
                   <img src= "${product.img}" alt="Photographie d'un canapé">
                 </div>
@@ -56,7 +58,7 @@ async function showBasket() {
                 </div>
               </article>`;
 		});
-	} else if (basketValue.length === 0 || basketValue.length === null) {
+	} else {
 		return messagePanierVide();
 	}
 
@@ -90,10 +92,10 @@ async function modifyQuantity() {
 				findColor.quantity = this.value;
 				//On Push le panier dans le local Storage
 				localStorage.setItem("kanapLs", JSON.stringify(basketValue));
-				calculQteTotale(basketValue);
+				calculQteTotale();
 				calculPrixTotal();
 			} else {
-				calculQteTotale(basketValue);
+				calculQteTotale();
 				calculPrixTotal();
 			}
 			localStorage.setItem("kanapLs", JSON.stringify(basketValue));
@@ -123,12 +125,14 @@ async function removeItem() {
 				(item) => item != searchDeleteKanap
 			);
 			localStorage.setItem("kanapLs", JSON.stringify(basketValue));
+			const getSection = document.querySelector("#cart__items");
+			getSection.removeChild(event.target.closest("article"));
 			alert("article supprimé !");
 			calculQteTotale();
 			calculPrixTotal();
 		});
 	});
-	if (getBasket().length === 0) {
+	if (getBasket() !== null && getBasket().length === 0) {
 		localStorage.clear();
 		return messagePanierVide();
 	}
@@ -168,13 +172,16 @@ function calculQteTotale() {
 	let basketValue = getBasket();
 	const zoneTotalQuantity = document.querySelector("#totalQuantity");
 	let quantityInBasket = []; // création d'un tableau vide pour accumuler les qtés
+	if (basketValue === null || basketValue.length === 0) {
+		messagePanierVide();
+	} else {
 	for (let kanap of basketValue) {
 		//basketValue = getBasket();
 		quantityInBasket.push(parseInt(kanap.quantity)); //push des qtés
 		const reducer = (accumulator, currentValue) => accumulator + currentValue; // addition des objets du tableau par reduce
 		zoneTotalQuantity.textContent = quantityInBasket.reduce(reducer, 0); //valeur initiale à 0 pour eviter erreur quand panier vide
 	}
-};
+}};
 
 async function calculPrixTotal() {
 	const responseFetch = await fetchApi();

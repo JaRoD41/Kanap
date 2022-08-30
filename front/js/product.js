@@ -57,8 +57,8 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 				let foundProducts = basketValue.find(
 					/// on définit foundProducts comme l'article à trouver
 					(item) =>
-						item.kanapPageId === product.kanapPageId &&
-						item.colorSelectedProduct === product.colorSelectedProduct
+						item.idSelectedProduct === product.idSelectedProduct &&
+						item.colorSelectedProduct === product.colorSelectedProduct	
 				); //si les produits du panier et les produits du LS ont même ID et même couleur
 					// il retournera undefined  
 				if (
@@ -75,6 +75,7 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 						parseInt(getProductQuantity.value); //CUMUL Quantité si présent
 					foundProducts.quantity = newQuantity;
 				}
+				console.log("foundproduct :", foundProducts);
 				saveBasket(basketValue);
 				alert(
 					`Le canapé ${nameKanap} ${colorOptions.value} a été ajouté en ${getProductQuantity.value} exemplaires à votre panier !`
