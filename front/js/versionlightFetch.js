@@ -204,9 +204,130 @@ removeItem();
 //On Push le panier dans le local Storage
 localStorage.setItem("kanapLs", JSON.stringify(basketValue));
 
-
-
-
 ///////////////// FORMULAIRE ///////////////////////////////////////////////
 
-//<p id="firstNameErrorMsg"><!-- ci est un message d'erreur --></p>
+// déclaration des différentes zones d'input et de messages d'erreur //
+
+const zoneFirstNameErrorMsg = document.querySelector("#firstNameErrorMsg");
+const zoneLastNameErrorMsg = document.querySelector("#lastNameErrorMsg");
+const zoneAddressErrorMsg = document.querySelector("#addressErrorMsg");
+const zoneCityErrorMsg = document.querySelector("#cityErrorMsg");
+const zoneEmailErrorMsg = document.querySelector("#emailErrorMsg");
+//const orderForm = document.getElementsByClassName("cart__order__form");
+
+const inputFirstName = document.getElementById("firstName");
+const inputLastName = document.getElementById("lastName");
+const inputAddress = document.getElementById("address");
+const inputCity = document.getElementById("city");
+const inputEmail = document.getElementById("email");
+
+// déclaration des regex de contrôle des inputs du formulaire //
+
+const regexFirstName = /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/;
+const regexLastName = regexFirstName;
+const regexAddress = /^[#.0-9a-zA-ZÀ-ÿ\s,-]{2,60}$/;
+const regexCity = regexFirstName;
+const regexEmail = /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/;
+
+// écoute du clic sur le bouton COMMANDER //
+
+const zoneOrderButton = document.querySelector("#order");
+
+zoneOrderButton.addEventListener("click", function(e) {
+	e.preventDefault(); // on empeche le formulaire de fonctionner par defaut si aucun contenu
+
+	// recupération des inputs du formulaire //
+
+	let checkFirstName = inputFirstName.value;
+	let checkLastName = inputLastName.value;
+	let checkAddress = inputAddress.value;
+	let checkCity = inputCity.value;
+	let checkEmail = inputEmail.value;
+
+	// mise en place des conditions de validation des champs du formulaire //
+
+function orderValidation() {
+	let basketValue = getBasket();
+
+	// si une erreur est trouvée, un message est retourné et la valeur false également //
+
+	if (regexFirstName.test(checkFirstName) == false || checkFirstName === null) {
+		zoneFirstNameErrorMsg.innerHTML = "Merci de renseigner votre prénom";
+		return false;
+	} else if (
+		regexLastName.test(checkLastName) == false ||
+		checkLastName === null
+	) {
+		zoneLastNameErrorMsg.innerHTML = "Merci de renseigner votre nom de famille";
+		return false;
+	} else if (
+		regexAddress.test(checkAddress) == false ||
+		checkAddress === null
+	) {
+		zoneAddressErrorMsg.innerHTML =
+			"Merci de renseigner une adresse valide (Numéro, voie, nom de la voie, code postal)";
+		return false;
+	} else if (regexCity.test(checkCity) == false || checkCity === null) {
+		zoneCityErrorMsg.innerHTML = "Merci de renseigner un nom de ville valide";
+		return false;
+	} else if (regexEmail.test(checkEmail) == false || checkEmail === null) {
+		zoneEmailErrorMsg.innerHTML =
+			"Merci de renseigner une adresse email valide";
+		return false;
+	}
+	// si tous les champs du formulaire sont correctement remplis //
+	else {
+		// on crée un objet contact pour l'envoi par l'API //
+
+		let contact = {
+			firstName: checkFirstName,
+			lastName: checkLastName,
+			address: checkAddress,
+			city: checkCity,
+			email: checkEmail,
+		};
+
+		// on crée un tableau vide qui va récupérer les articles du panier à envoyer à l'API //
+
+		let products = [];
+
+		// la requête POST ne prend en compte QUE l'ID des produits du panier //
+		// On ne push donc QUE les ID des canapés du panier dans le tableau créé //
+
+		for (let canapId of basketValue) {
+			products.push(canapId.idSelectedProduct);
+		}
+
+		// on crée l'objet contenant les infos de la commande //
+
+		let finalOrderObject = { contact, products };
+
+		// récupération de l'ID de commande après fetch POST vers API   //
+
+		const orderId = fetch("http://localhost:3000/api/products/order", {
+			method: "POST",
+			body: JSON.stringify(finalOrderObject),
+			headers: {
+				"Content-type": "application/json",
+			},
+		});
+		orderId.then(async function (response) {
+			const retour = await response.json();
+			window.location.href = `confirmation.html?orderId=${retour.orderId}`;
+			}) // réponse de l'API //
+			
+				
+			
+			
+				//window.location.href = `confirmation.html?orderId=${data.orderId}`;
+			//}) //renvoi vers la page de confirmation avec l'ID de commande //
+
+			
+	}
+}
+
+orderValidation();
+});
+
+
+
