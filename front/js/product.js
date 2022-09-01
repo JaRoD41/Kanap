@@ -75,7 +75,6 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 						parseInt(getProductQuantity.value); //CUMUL Quantité si présent
 					foundProducts.quantity = newQuantity;
 				}
-				console.log("foundproduct :", foundProducts);
 				saveBasket(basketValue);
 				alert(
 					`Le canapé ${nameKanap} ${colorOptions.value} a été ajouté en ${getProductQuantity.value} exemplaires à votre panier !`
