@@ -1,7 +1,7 @@
 const basketValue = JSON.parse(localStorage.getItem("kanapLs"));
 /////////////// déclaration de la fonction du fetch pour acceder aux infos Hors Scope/////////
 async function fetchApi() {    
-let basketArrayFull = [];
+let basketArrayFull = []; // tableau vide qui va contenir les objets créés en suite
 let basketClassFull = JSON.parse(localStorage.getItem("kanapLs"));
 if (basketClassFull !== null) {
 for (let g = 0; g < basketClassFull.length; g++) {
@@ -35,7 +35,7 @@ async function showBasket() {
 	const basketValue = JSON.parse(localStorage.getItem("kanapLs"));
 	if (basketValue !== null && basketValue.length !== 0) {
 		const zonePanier = document.querySelector("#cart__items");
-		responseFetch.forEach((product) => { // injection des produits
+		responseFetch.forEach((product) => { // injection dynamique des produits dans le DOM
 			zonePanier.innerHTML += `<article class="cart__item" data-id="${product._id}" data-color="${product.color}">
                 <div class="cart__item__img">
                   <img src= "${product.img}" alt="Photographie d'un canapé">
@@ -82,11 +82,12 @@ async function modifyQuantity() {
 			let idModif = this.closest(".cart__item").dataset.id;
 			//On récupère la couleur de la donnée modifiée
 			let colorModif = this.closest(".cart__item").dataset.color;
-			//On récupère le bon iD dans le panier
+			//On filtre le Ls avec l'iD du canap modifié
 			let findId = basketValue.filter((e) => e.idSelectedProduct === idModif);
-			//Puis on récupère la couleur
+			//Puis on cherche le canap même id par sa couleur 
 			let findColor = findId.find((e) => e.colorSelectedProduct === colorModif);
 			if (this.value > 0) {
+				// si la couleur et l'id sont trouvés, on modifie la quantité en fonction
 				findColor.quantity = this.value;
 				//On Push le panier dans le local Storage
 				localStorage.setItem("kanapLs", JSON.stringify(basketValue));
@@ -109,28 +110,28 @@ async function removeItem() {
 	kanapDelete.forEach((article) => {
 		article.addEventListener("click", function (event) {
 			let basketValue = getBasket();
-			//On récupère l'ID de la donnée modifiée
+			//On récupère l'ID de la donnée concernée
 			const idDelete = event.target.closest("article").getAttribute("data-id");
-			//On récupère la couleur de la donnée modifiée
+			//On récupère la couleur de la donnée concernée
 			const colorDelete = event.target
 				.closest("article")
 				.getAttribute("data-color");
-			const searchDeleteKanap = basketValue.find(
+			const searchDeleteKanap = basketValue.find(  // on cherche l'élément du Ls concerné 
 				(element) => element.idSelectedProduct == idDelete && element.colorSelectedProduct == colorDelete
 			);
-			basketValue = basketValue.filter(
+			basketValue = basketValue.filter(  // et on filtre le Ls avec l'élément comme modèle
 				(item) => item != searchDeleteKanap
 			);
-			localStorage.setItem("kanapLs", JSON.stringify(basketValue));
+			localStorage.setItem("kanapLs", JSON.stringify(basketValue)); // on met à jour le Ls
 			const getSection = document.querySelector("#cart__items");
-			getSection.removeChild(event.target.closest("article"));
+			getSection.removeChild(event.target.closest("article")); // on supprime l'élément du DOM
 			alert("article supprimé !");
 			calculQteTotale();
-			calculPrixTotal();
+			calculPrixTotal();  // on met à jour les qty et prix dynamiquement
 		});
 	});
 	if (getBasket() !== null && getBasket().length === 0) {
-		localStorage.clear();
+		localStorage.clear();       //////// si le Ls est vide, on le clear et on affiche le message 
 		return messagePanierVide();
 	}
 };
@@ -141,12 +142,11 @@ removeItem();
 initialize();
 
 async function initialize() {
-let basketArrayFull = fetchApi();
-showBasket();
-removeItem();
-modifyQuantity();
+showBasket();         ////// affichage du DOM ( avec rappel du fetchApi //////
+removeItem();		  ////// suppression dynamique des articles du panier et 
+modifyQuantity();	  ////// modification des quantités
 
-calculQteTotale();
+calculQteTotale();	  ////// mise à jour dynamique des quantités et prix totaux
 calculPrixTotal();
 };
 
@@ -221,7 +221,7 @@ const inputEmail = document.getElementById("email");
 
 const regexFirstName = /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/;
 const regexLastName = regexFirstName;
-const regexAddress = /^[#.0-9a-zA-ZÀ-ÿ\s,-]{2,60}$/;
+const regexAddress = /^[#.0-9a-zA-ZÀ-ÿ\s,-]{2,60}$/; //tous les caractères et nombres jusqu'à 60 chiffr
 const regexCity = regexFirstName;
 const regexEmail = /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/;
 
@@ -248,13 +248,13 @@ function orderValidation() {
 	// si une erreur est trouvée, un message est retourné et la valeur false également //
 
 	if (regexFirstName.test(checkFirstName) == false || checkFirstName === null) {
-		zoneFirstNameErrorMsg.innerHTML = "Merci de renseigner votre prénom";
+		zoneFirstNameErrorMsg.innerHTML = "Merci de renseigner un prénom valide";
 		return false;
 	} else if (
 		regexLastName.test(checkLastName) == false ||
 		checkLastName === null
 	) {
-		zoneLastNameErrorMsg.innerHTML = "Merci de renseigner votre nom de famille";
+		zoneLastNameErrorMsg.innerHTML = "Merci de renseigner un nom de famille valide";
 		return false;
 	} else if (
 		regexAddress.test(checkAddress) == false ||
