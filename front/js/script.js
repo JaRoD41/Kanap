@@ -20,7 +20,7 @@ fetch("http://localhost:3000/api/products/") //requete de l'API afin d'importer 
     </a>`; //les photos et infos des canapés sont insérées dynamiquement dans l'HTML de la page d'accueil
 		}
 	})
-	.catch(function (err) {
+	.catch(function (err) {  // retour d'un code d'erreur dans la console en cas de problème lors du fetch
 		console.log(err);
 	});
 

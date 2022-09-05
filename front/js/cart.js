@@ -18,7 +18,7 @@ for (let g = 0; g < basketClassFull.length; g++) {
 				alt: canap.altTxt,
 				img: canap.imageUrl,
 			};
-			basketArrayFull.push(article);
+			basketArrayFull.push(article); //ajout de l'objet article au tableau 
 		})
 		.catch(function (err) {
 			console.log(err);
@@ -31,7 +31,7 @@ return basketArrayFull;
 //////////// fonction d'affichage du DOM ////////////////////
 
 async function showBasket() {
-	const responseFetch = await fetchApi(); // appel de la fonction FETCH //
+	const responseFetch = await fetchApi(); // appel de la fonction FETCH et attente de sa réponse//
 	const basketValue = JSON.parse(localStorage.getItem("kanapLs"));
 	if (basketValue !== null && basketValue.length !== 0) {
 		const zonePanier = document.querySelector("#cart__items");
@@ -59,7 +59,7 @@ async function showBasket() {
               </article>`;
 		});
 	} else {
-		return messagePanierVide();
+		return messagePanierVide(); //si Ls vide, affichage du message Panier Vide
 	}
 
 };
@@ -72,7 +72,7 @@ function getBasket() {  // fonction de récupération du LocalStorage//////
 //Fonction permettant de modifier le nombre d'éléments dans le panier
 
 async function modifyQuantity() {
-	await fetchApi();
+	await fetchApi(); //on attend que le fetch soit terminé
 	const quantityInCart = document.querySelectorAll(".itemQuantity");
 	for (let input of quantityInCart) {
 		input.addEventListener("change", function () {
@@ -106,7 +106,7 @@ async function modifyQuantity() {
 
 async function removeItem() {
 	await fetchApi();
-	let kanapDelete = document.querySelectorAll(".deleteItem");
+	let kanapDelete = document.querySelectorAll(".deleteItem"); //crée un tableau avec les boutons suppr
 	kanapDelete.forEach((article) => {
 		article.addEventListener("click", function (event) {
 			let basketValue = getBasket();
@@ -160,7 +160,7 @@ function messagePanierVide() {
 	cartTitle.textContent = emptyCartMessage;
 	cartTitle.style.fontSize = "40px";
 
-	document.querySelector(".cart__order").style.display = "none"; //masque le forulaire si panier vide
+	document.querySelector(".cart__order").style.display = "none"; //masque le formulaire si panier vide
 	document.querySelector(".cart__price").style.display = "none"; // masque le prix total si panier vide
 };
 
@@ -185,7 +185,7 @@ async function calculPrixTotal() {
 	let basketValue = getBasket();
 	const zoneTotalPrice = document.querySelector("#totalPrice");
     finalTotalPrice = [];
-    for (let p = 0; p < responseFetch.length; p++) {
+    for (let p = 0; p < responseFetch.length; p++) { //produit du prix unitaire et de la quantité
 	let sousTotal = parseInt(responseFetch[p].quantity) * parseInt(responseFetch[p].price);
 	finalTotalPrice.push(sousTotal);
 
@@ -221,7 +221,7 @@ const inputEmail = document.getElementById("email");
 
 const regexFirstName = /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/;
 const regexLastName = regexFirstName;
-const regexAddress = /^[#.0-9a-zA-ZÀ-ÿ\s,-]{2,60}$/; //tous les caractères et nombres jusqu'à 60 chiffr
+const regexAddress = /^[#.0-9a-zA-ZÀ-ÿ\s,-]{2,60}$/; 
 const regexCity = regexFirstName;
 const regexEmail = /^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,4})$/;
 

@@ -3,8 +3,8 @@ let kanapPageId = url.searchParams.get("id"); //récupère l'id contenu dans l'u
 
 let zoneImgKanap = document.querySelector(".item__img");
 let nomKanap = document.querySelector("#title");
-let prixKanap = document.querySelector("#price");
-let speechKanap = document.querySelector("#description");
+let prixKanap = document.querySelector("#price");			// emplacements des différentes zones
+let speechKanap = document.querySelector("#description");	// d'insertion des variables dynamiques
 let colorOptions = document.querySelector("#colors");
 let getProductQuantity = document.querySelector("#quantity");
 
@@ -45,7 +45,7 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 			function getBasket() {
 				let basketValue = JSON.parse(localStorage.getItem("kanapLs"));
 				if (basketValue === null) {
-					return [];
+					return [];				//si le LocalStorage est vide, on crée un tableau vide
 				} else {
 					return basketValue
 				}
@@ -59,20 +59,20 @@ fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne Q
 					(item) =>
 						item.idSelectedProduct === product.idSelectedProduct &&
 						item.colorSelectedProduct === product.colorSelectedProduct	
-				); //si les produits du panier et les produits du LS ont même ID et même couleur
+				); //si les produits du panier et les produits du LS n'ont pas même ID et même couleur
 					// il retournera undefined  
 				if (
 					foundProducts == undefined &&
-					colorOptions.value != "" &&
+					colorOptions.value != "" &&			//si les consitions sont OK
 					getProductQuantity.value > 0 &&
 					getProductQuantity.value <= 100
 				) {
-					product.quantity = getProductQuantity.value;
-					basketValue.push(product);
+					product.quantity = getProductQuantity.value; //la quantité saisie est définie 
+					basketValue.push(product);					 //dans le Ls
 				} else {
 					let newQuantity =
 						parseInt(foundProducts.quantity) +
-						parseInt(getProductQuantity.value); //CUMUL Quantité si présent
+						parseInt(getProductQuantity.value); //CUMUL Quantité si présent ID et color
 					foundProducts.quantity = newQuantity;
 				}
 				saveBasket(basketValue);
