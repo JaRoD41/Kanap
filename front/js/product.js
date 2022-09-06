@@ -1,12 +1,12 @@
 let url = new URL(location.href); //déclare une variable valant l'url de la page actuelle
 let kanapPageId = url.searchParams.get("id"); //récupère l'id contenu dans l'url de la page actuelle
 
-let zoneImgKanap = document.querySelector(".item__img");
-let nomKanap = document.querySelector("#title");
-let prixKanap = document.querySelector("#price");			// emplacements des différentes zones
-let speechKanap = document.querySelector("#description");	// d'insertion des variables dynamiques
-let colorOptions = document.querySelector("#colors");
-let getProductQuantity = document.querySelector("#quantity");
+const zoneImgKanap = document.querySelector(".item__img");
+const nomKanap = document.querySelector("#title");
+const prixKanap = document.querySelector("#price");			// emplacements des différentes zones
+const speechKanap = document.querySelector("#description");	// d'insertion des variables dynamiques
+const colorOptions = document.querySelector("#colors");
+const getProductQuantity = document.querySelector("#quantity");
 
 fetch(`http://localhost:3000/api/products/${kanapPageId}`) //je ne selectionne QUE la partie du JSON qui m'interesse en fonction de l'id du kanap concerné à fetch
 	.then((res) => res.json())

@@ -106,7 +106,7 @@ async function modifyQuantity() {
 
 async function removeItem() {
 	await fetchApi();
-	let kanapDelete = document.querySelectorAll(".deleteItem"); //crée un tableau avec les boutons suppr
+	const kanapDelete = document.querySelectorAll(".deleteItem"); //crée un tableau avec les boutons suppr
 	kanapDelete.forEach((article) => {
 		article.addEventListener("click", function (event) {
 			let basketValue = getBasket();

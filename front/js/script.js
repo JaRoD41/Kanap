@@ -1,4 +1,4 @@
-let zoneKanaps = document.getElementById("items"); //je définis une variable dans la zone concernée par l'injection du HTML dynamique
+const zoneKanaps = document.getElementById("items"); //je définis une variable dans la zone concernée par l'injection du HTML dynamique
 
 fetch("http://localhost:3000/api/products/") //requete de l'API afin d'importer les données des canapés
 	.then((res) => res.json()) //conversion des données reçues en format JSON exploitable par js
@@ -6,11 +6,11 @@ fetch("http://localhost:3000/api/products/") //requete de l'API afin d'importer 
 		//les données JSON sont nommées "data" pour être exploitées en tant que tableau
 		for (let champ of data) {
 			//boucle pour importer chaque champ du JSON et lui attribuer une variable
-			let idKanap = champ._id;
-			let photoKanap = champ.imageUrl;
-			let altTexte = champ.altTxt;
-			let nomKanap = champ.name;
-			let speechKanap = champ.description;
+			const idKanap = champ._id;
+			const photoKanap = champ.imageUrl;
+			const altTexte = champ.altTxt;
+			const nomKanap = champ.name;
+			const speechKanap = champ.description;
 			zoneKanaps.innerHTML += `<a href="./product.html?id=${idKanap}">
         <article>
           <img src="${photoKanap}" alt="${altTexte}">
