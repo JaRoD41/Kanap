@@ -63,7 +63,7 @@ async function showBasket() {
 	}
 
 };
-//création des fonctions de modif et suppression d'articles du panier////
+//////////////création des fonctions de modif et suppression d'articles du panier/////////////////
 
 function getBasket() {  // fonction de récupération du LocalStorage//////
     return JSON.parse(localStorage.getItem("kanapLs"));
